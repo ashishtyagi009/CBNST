@@ -1,0 +1,79 @@
+#include <stdio.h>
+
+#define MAX 20
+
+void printMatrix(float A[MAX][MAX+1], int n) {
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n+1; j++) {
+            printf("%6.2f ", A[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    printf("\nName:Ashish Tyagi\n");
+    printf("Roll Number:24\n");
+    printf("Section:D\n");
+    int i, j, k, n;
+    float A[MAX][MAX+1], c;
+
+    printf("Enter the number of equations (order of matrix): ");
+    scanf("%d", &n);
+
+    // Input coefficients for the augmented matrix
+    printf("Enter the coefficients of the augmented matrix row-wise:\n\n");
+    for (i = 1; i <= n; i++) {
+        for (j = 1; j <= n + 1; j++) {
+            printf("A[%d][%d] : ", i, j);
+            scanf("%f", &A[i][j]);
+        }
+    }
+
+    // Print the augmented matrix
+    printf("\nThe Augmented Matrix is:\n");
+    printMatrix(A, n);
+
+    // Gaussian-Jordan Elimination to convert to Reduced Row Echelon Form
+    for (int j = 1; j <= n; j++) {
+        // Make the diagonal contain all 1s
+        if (A[j][j] == 0) {
+            printf("Error: Zero pivot element found. The matrix is singular or badly scaled.\n");
+            return 1;
+        }
+        float pivot = A[j][j];
+        for (k = 1; k <= n + 1; k++) {
+            A[j][k] /= pivot;
+        }
+
+        // Print the matrix after making the diagonal entry 1
+        printf("\nAfter normalizing row %d:\n", j);
+        printMatrix(A, n);
+
+        // Make all other entries in the column zero
+        for (i = 1; i <= n; i++) {
+            if (i != j) {
+                c = A[i][j];
+                for (k = 1; k <= n + 1; k++) {
+                    A[i][k] -= c * A[j][k];
+                }
+            }
+        }
+
+        // Print the matrix after eliminating column %d entries\n", j);
+        printf("\nAfter eliminating column %d entries:\n", j);
+        printMatrix(A, n);
+    }
+
+    // Print the final matrix in RREF
+    printf("\nThe Reduced Row Echelon Form (RREF) Matrix is:\n");
+    printMatrix(A, n);
+
+    // Print the solutions
+    printf("\nThe solution is:\n");
+    for (i = 1; i <= n; i++) {
+        printf("x%d = %f\n", i, A[i][n+1]);
+    }
+
+    return 0;
+}
